@@ -17,11 +17,15 @@ extension UserController: RouteCollection {
         router.post("login", use: handleUserLogin)
         router.get("login", use: showLoginPage)
         
-      //  router.get("me", use: getMyProfile)
+        router.get("me", use: getMyProfile)
     }
 }
 
 final class UserController {
+    
+    func getMyProfile(_ request: Request) throws -> Future<View> {
+        return try request.view().render("me")
+    }
     
     func showRegisterPage(_ request: Request) throws -> Future<View> {
         return try request.view().render("register")
