@@ -11,7 +11,6 @@ import FluentPostgreSQL
 
 extension PostController: RouteCollection {
     func boot(router: Router) throws {
-        // let protectedRoutes = router.grouped(User.authSessionsMiddleware())
         router.post("createPost", use: createPost)
         router.get("createPost", use: showCreatePostPage)
         router.get("allPosts", use: viewAllPosts)
@@ -28,8 +27,11 @@ final class PostController {
     }
     
     func createPost(_ request: Request) throws -> Future<Post> {
-        return try request.content.decode(Post.self).flatMap(to: Post.self) { post in
-           return post.save(on: request)
+        return try request.content.decode(CreatePostRequest.self).flatMap(to: Post.self) { createRequest in
+            // We need to un-hardcode this userId
+            // we will get the userId from the session cookie
+            let post = Post(title: createRequest.title, userId: 1)
+            return post.save(on: request)
         }
     }
     

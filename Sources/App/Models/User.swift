@@ -39,5 +39,4 @@ extension User: PasswordAuthenticatable {
 }
 
 extension User: Content, Migration { }
-extension User: SessionAuthenticatable { }
 
