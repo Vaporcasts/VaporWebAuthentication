@@ -1,0 +1,7 @@
+#set("content") {
+    #for(post in posts) {
+        The post title is #(post.title) <br/>
+    }
+}
+
+#embed("base")

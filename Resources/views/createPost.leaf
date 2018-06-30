@@ -1,0 +1,9 @@
+#set("content") {
+<form action="/createPost" method="post">
+    <input name="title" type="text" placeholder="title"/><br/>
+    <button type="submit">Submit</button>
+</form>
+}
+
+#embed("base")
+

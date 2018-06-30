@@ -1,0 +1,9 @@
+#set("content") {
+<form action="/login" method="post">
+    <input name="name" type="text" placeholder="name"/><br/>
+    <input name="password" type="password" placeholder="password"/><br/>
+    <button type="submit">Submit</button>
+</form>
+}
+
+#embed("base")
