@@ -19,10 +19,17 @@ extension UserController: RouteCollection {
         
         let authedRoutes = router.grouped(SessionAuthenticationMiddleware())
         authedRoutes.get("me", use: getMyProfile)
+        
+        authedRoutes.get("logout", use: logout)
     }
 }
 
 final class UserController {
+    
+    func logout(_ request: Request) throws -> HTTPStatus {
+        try request.session()["userId"] = nil
+        return HTTPStatus(statusCode: 200, reasonPhrase: "You are logged out")
+    }
     
     func getMyProfile(_ request: Request) throws -> Future<View> {
         let currentUser = try request.sessionUser()
