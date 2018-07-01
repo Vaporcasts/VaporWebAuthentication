@@ -20,6 +20,7 @@ extension PostController: RouteCollection {
 final class PostController {
     
     func viewAllPosts(_ request: Request) throws -> Future<View> {
+        print(try request.session().id)
         return Post.query(on: request).all().flatMap(to: View.self) { posts in
             let allPostsContext = AllPostsContext(posts: posts)
             return try request.view().render("allPosts", allPostsContext)

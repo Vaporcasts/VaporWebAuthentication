@@ -21,10 +21,13 @@ final class User: PostgreSQLModel {
         }
     }
     
-    static func login(with request: Request) throws -> Future<User> {
-        return try request.content.decode(User.self).flatMap(to: User.self) { user in
+    static func login(with request: Request) throws -> Future<Response> {
+        return try request.content.decode(User.self).flatMap(to: Response.self) { user in
             let verifier = try request.make(BCryptDigest.self)
-            return User.authenticate(username: user.name, password: user.password, using: verifier, on: request).unwrap(or: Abort(HTTPResponseStatus.unauthorized))
+            return User.authenticate(username: user.name, password: user.password, using: verifier, on: request).unwrap(or: Abort(HTTPResponseStatus.unauthorized)).map(to: Response.self, { authedUser  in
+                try request.session()["userId"] =  "\(try authedUser.requireID())"
+                return request.redirect(to: "/me")
+            })
         }
     }
 }
@@ -38,5 +41,6 @@ extension User: PasswordAuthenticatable {
     }
 }
 
+extension User: SessionAuthenticatable { }
 extension User: Content, Migration { }
 

@@ -17,14 +17,17 @@ extension UserController: RouteCollection {
         router.post("login", use: handleUserLogin)
         router.get("login", use: showLoginPage)
         
-        router.get("me", use: getMyProfile)
+        let authedRoutes = router.grouped(SessionAuthenticationMiddleware())
+        authedRoutes.get("me", use: getMyProfile)
     }
 }
 
 final class UserController {
     
     func getMyProfile(_ request: Request) throws -> Future<View> {
-        return try request.view().render("me")
+        let currentUser = try request.sessionUser()
+        let profileContext = UserProfilePage(user: currentUser)
+        return try request.view().render("me", profileContext)
     }
     
     func showRegisterPage(_ request: Request) throws -> Future<View> {
@@ -39,7 +42,7 @@ final class UserController {
         return try User.signup(with: request)
     }
     
-    func handleUserLogin(_ request: Request) throws -> Future<User> {
+    func handleUserLogin(_ request: Request) throws -> Future<Response> {
         return try User.login(with: request)
     }
 }
